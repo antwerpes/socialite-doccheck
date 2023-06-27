@@ -30,7 +30,7 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
         $url = $this->getTokenUrl().'?'.http_build_query($this->getTokenFields($code), '', '&', $this->encodingType);
         $response = $this->getHttpClient()->get($url);
 
-        return json_decode($response->getBody(), true);
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -64,7 +64,7 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
     {
         if ($this->config['license'] === 'economy') {
             return [
-                'uniquekey' => $this->request->input('login_id'),
+                'uniquekey' => $this->request->input('uniquekey'),
             ];
         }
 
@@ -80,7 +80,7 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
             );
         } catch (ClientException $exception) {
             $response = $exception->getResponse();
-            $body = json_decode($response->getBody(), true);
+            $body = json_decode($response->getBody()->getContents(), true);
 
             if ($response->getStatusCode() === 400 && ($body['error'] ?? null) === 'revoked_token') {
                 return ['uniquekey' => $body['uniquekey']];
@@ -89,7 +89,7 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
             throw $exception;
         }
 
-        return json_decode($response->getBody(), true);
+        return json_decode($response->getBody()->getContents(), true);
     }
 
     /**
@@ -117,10 +117,8 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
 
     /**
      * Decode html-encoded entities from user data response.
-     *
-     * @param mixed $value
      */
-    protected function decodeValue($value): ?string
+    protected function decodeValue(mixed $value): ?string
     {
         if ($value === null) {
             return null;
@@ -129,7 +127,7 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
         return html_entity_decode($value);
     }
 
-    protected function getRelatedId($value): ?int
+    protected function getRelatedId(mixed $value): ?int
     {
         if ($value === null || $value === '0' || $value === 0) {
             return null;
