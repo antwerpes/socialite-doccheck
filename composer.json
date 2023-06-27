@@ -1,0 +1,49 @@
+{
+  "name": "antwerpes/socialite-doccheck",
+  "description": "DocCheck Login Provider for Laravel Socialite",
+  "keywords": [
+    "laravel",
+    "socalite",
+    "oauth",
+    "doccheck"
+  ],
+  "type": "library",
+  "homepage": "https://github.com/antwerpes/socialite-doccheck",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Elisha Witte",
+      "email": "opensource@antwerpes.com",
+      "role": "Developer"
+    }
+  ],
+  "require": {
+    "php": "^8.0|^8.1|^8.2",
+    "illuminate/contracts": "^9.28|^10.0",
+    "laravel/socialite": "~5.0",
+    "ext-json": "*"
+  },
+  "require-dev": {
+    "chiiya/laravel-code-style": "^2.2",
+    "orchestra/testbench": "^6.0|^7.1|^8.0"
+  },
+  "autoload": {
+    "psr-4": {
+      "Antwerpes\\SocialiteDocCheck\\": "src"
+    }
+  },
+  "extra": {
+    "laravel": {
+      "providers": [
+        "Antwerpes\\SocialiteDocCheck\\SocialiteDocCheckServiceProvider"
+      ]
+    }
+  },
+  "prefer-stable": true,
+  "config": {
+    "allow-plugins": {
+      "phpro/grumphp": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
