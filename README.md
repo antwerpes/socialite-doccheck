@@ -94,7 +94,8 @@ public function showLoginForm(): Response
 }
 ```
 
-In your view you can then simply embed the iFrame using this url:
+In your view you can then simply embed the iFrame using the embedding code given to you, but replacing the url
+with the one we just generated, for example:
 
 ```php
 <iframe
