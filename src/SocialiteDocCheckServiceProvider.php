@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Antwerpes\SocialiteDocCheck;
 
@@ -15,10 +15,7 @@ class SocialiteDocCheckServiceProvider extends BaseProvider
 
     public function register(): void
     {
-        $this->mergeConfigFrom(
-            __DIR__ . '/../config/services.php',
-            'services'
-        );
+        $this->mergeConfigFrom(__DIR__.'/../config/services.php', 'services');
     }
 
     protected function bootSocialiteDriver(): void

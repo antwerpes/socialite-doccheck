@@ -1,4 +1,4 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace Antwerpes\SocialiteDocCheck;
 
@@ -19,33 +19,10 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
     }
 
     /**
-     * @inheritDoc
-     */
-    protected function getAuthUrl($state): string
-    {
-        $language = $this->config['language'] === 'en' ? 'com' : $this->config['language'];
-
-        return 'https://login.doccheck.com/code/?'.http_build_query([
-                'dc_language' => $language,
-                'dc_client_id' => $this->clientId,
-                'dc_template' => $this->config['template'],
-                'state' => $state,
-                'redirect_uri' => $this->redirectUrl,
-            ]);
-    }
-
-    /**
-     * @inheritDoc
-     */
-    protected function getTokenUrl(): string
-    {
-        return 'https://login.doccheck.com/service/oauth/access_token';
-    }
-
-    /**
      * Get the access token response for the given code.
      *
      * @param string $code
+     *
      * @throws GuzzleException
      */
     public function getAccessTokenResponse($code): array
@@ -57,7 +34,31 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
+     */
+    protected function getAuthUrl($state): string
+    {
+        $language = $this->config['language'] === 'en' ? 'com' : $this->config['language'];
+
+        return 'https://login.doccheck.com/code/?'.http_build_query([
+            'dc_language' => $language,
+            'dc_client_id' => $this->clientId,
+            'dc_template' => $this->config['template'],
+            'state' => $state,
+            'redirect_uri' => $this->redirectUrl,
+        ]);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function getTokenUrl(): string
+    {
+        return 'https://login.doccheck.com/service/oauth/access_token';
+    }
+
+    /**
+     * {@inheritDoc}
      */
     protected function getUserByToken($token): array
     {
@@ -72,10 +73,10 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
                 'https://login.doccheck.com/service/oauth/user_data',
                 [
                     RequestOptions::HEADERS => [
-                        'Accept'        => 'application/json',
+                        'Accept' => 'application/json',
                         'Authorization' => 'Bearer '.$token,
                     ],
-                ]
+                ],
             );
         } catch (ClientException $exception) {
             $response = $exception->getResponse();
@@ -92,11 +93,11 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
     }
 
     /**
-     * @inheritDoc
+     * {@inheritDoc}
      */
     protected function mapUserToObject(array $user): User
     {
-        return (new User())->setRaw($user)->map([
+        return (new User)->setRaw($user)->map([
             'id' => $user['uniquekey'],
             'email' => $user['email'] ?? null,
             'title' => $this->decodeValue($user['address_name_title'] ?? null),
@@ -116,6 +117,8 @@ class DocCheckSocialiteProvider extends AbstractProvider implements ProviderInte
 
     /**
      * Decode html-encoded entities from user data response.
+     *
+     * @param mixed $value
      */
     protected function decodeValue($value): ?string
     {
