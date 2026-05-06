@@ -77,11 +77,11 @@ class LoginController extends Controller
 }
 ```
 
-### Login via iFrame
+### Login button in Blade
 
-To embed the login on your website instead of relying on redirects, make sure you use a valid iFrame template first
-(e.g. `login_xl`). Next, in your controller, instead of redirecting the user, grab the constructed redirect URL and
-pass it to your view:
+You can either render the DocCheck Login button with the DocCheck Web Component or pass the Login URL directly to a Blade template.
+
+If you want to pass the generated URL directly:
 
 ```php
 public function showLoginForm(): Response
@@ -94,21 +94,45 @@ public function showLoginForm(): Response
 }
 ```
 
-In your view you can then simply embed the iFrame using the embedding code given to you, but replacing the url
-with the one we just generated, for example:
+Blade Template:
 
 ```php
-<iframe
-    align="left"
-    frameborder="0"
-    width="467"
-    height="231"
-    name="dc_login_iframe"
-    id="dc_login_iframe"
-    src="{{ $url }}"
->
-    <a href="{{ $url }}" target="_blank">LOGIN</a>
-</iframe>
+<a href="{{ $url }}">Login with DocCheck</a>
+```
+
+If you want to render the Login with DocCheck Button using the Web Component, also extract and pass the `state` parameter:
+
+```php
+public function showLoginForm(): Response
+{
+    $url = Socialite::driver('doccheck')->redirect()->getTargetUrl();
+    $state = null;
+    $query = parse_url($url, PHP_URL_QUERY);
+
+    if (is_string($query)) {
+        parse_str($query, $params);
+        $state = $params['state'] ?? null;
+    }
+
+    return response()->view('auth.login', [
+        'url' => $url,
+        'state' => $state,
+    ]);
+}
+```
+
+Blade example (DocCheck Web Component):
+
+```php
+<script src="[latest main.js]"></script>
+<dc-login-button
+    size="medium"
+    language="en"
+    loginClientId="{{ env('DOCCHECK_CLIENT_KEY') }}"
+    redirectUri="{{ env('DOCCHECK_REDIRECT_URI') }}"
+    scope="unique_id profession country language"
+    state="{{ $state }}"
+></dc-login-button>
 ```
 
 The callback logic stays the same (see example above).
