@@ -128,8 +128,8 @@ Blade example (DocCheck Web Component):
 <dc-login-button
     size="medium"
     language="en"
-    loginClientId="{{ env('DOCCHECK_CLIENT_KEY') }}"
-    redirectUri="{{ env('DOCCHECK_REDIRECT_URI') }}"
+    loginClientId="{{ config('services.doccheck.client_id') }}"
+    redirectUri="{{ config('services.doccheck.redirect') }}"
     scope="unique_id profession country language"
     state="{{ $state }}"
 ></dc-login-button>
